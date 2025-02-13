@@ -107,7 +107,7 @@ uint8_t DFRobot_matrixLidarDistanceSensor::getAllDataConfig(eMatrix_t matrix){
 uint8_t DFRobot_matrixLidarDistanceSensor::configAvoidance(uint8_t wall){
   uint8_t length = 2;
   uint8_t errorCode;
-  uint16_t _wall = wall * 10;
+  uint16_t _wall = wall;
   pCmdSendPkt_t sendpkt = NULL;
   sendpkt = (pCmdSendPkt_t)malloc(sizeof(sCmdSendPkt_t) + length);
   if(sendpkt == NULL) return 1;
@@ -246,9 +246,9 @@ uint8_t DFRobot_matrixLidarDistanceSensor::requestObstacleDistance(void){
   if((rcvpkt != NULL) && (rcvpkt->status == STATUS_SUCCESS)){
     length = (rcvpkt->lenH << 8) | rcvpkt->lenL;
     DBG(length);
-    outLeft = (rcvpkt->buf[0] | rcvpkt->buf[1] << 8) / 10;
-    outMiddle = (rcvpkt->buf[2] | rcvpkt->buf[3] << 8) / 10;
-    outRight = (rcvpkt->buf[4] | rcvpkt->buf[5] << 8) / 10;
+    outLeft = (rcvpkt->buf[0] | rcvpkt->buf[1] << 8);
+    outMiddle = (rcvpkt->buf[2] | rcvpkt->buf[3] << 8);
+    outRight = (rcvpkt->buf[4] | rcvpkt->buf[5] << 8);
     if(rcvpkt) free(rcvpkt);
     return 0;
   }
