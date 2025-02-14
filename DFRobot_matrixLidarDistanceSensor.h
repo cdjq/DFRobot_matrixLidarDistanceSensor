@@ -69,7 +69,7 @@ public:
    * @brief Initializes obstacle avoidance
    * @param wall Configures the obstacle avoidance distance, in centimeters
    */
-  uint8_t configAvoidance(uint8_t wall);
+  uint8_t configAvoidance(uint16_t wall);
 
   /**
    * @fn getAllData
@@ -121,6 +121,8 @@ public:
    * @return Returns the distance
    */
   uint16_t getDistance(eDir_t dir);
+
+  uint16_t retDistance(eDir_t dir);
 protected:
   /**
    * @fn recvPacket

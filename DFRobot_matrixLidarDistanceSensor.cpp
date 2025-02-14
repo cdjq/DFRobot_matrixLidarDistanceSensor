@@ -104,7 +104,7 @@ uint8_t DFRobot_matrixLidarDistanceSensor::getAllDataConfig(eMatrix_t matrix){
   return 1;
 }
 
-uint8_t DFRobot_matrixLidarDistanceSensor::configAvoidance(uint8_t wall){
+uint8_t DFRobot_matrixLidarDistanceSensor::configAvoidance(uint16_t wall){
   uint8_t length = 2;
   uint8_t errorCode;
   uint16_t _wall = wall;
@@ -274,6 +274,13 @@ uint16_t DFRobot_matrixLidarDistanceSensor::getDistance(eDir_t dir){
   return _ret;
 }
 
+uint16_t DFRobot_matrixLidarDistanceSensor::retDistance(eDir_t dir)
+{
+  requestObstacleDistance();
+  delay(10);
+  return getDistance(dir);
+
+}
 
 void DFRobot_matrixLidarDistanceSensor_I2C::sendPacket(void *pkt, int length, bool stop){
   uint8_t *pBuf = (uint8_t *)pkt;
