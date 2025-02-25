@@ -90,13 +90,6 @@ To use this library, download the library file first, paste it into the \Arduino
     uint8_t getEmergencyFlag(void);
 
     /**
-     * @fn getObstacleDistance
-     * @brief Requests the distance to obstacles
-     * @return Returns the request status
-     */
-    uint8_t requestObstacleDistance(void);
-
-    /**
      * @fn getDistance
      * @brief Retrieves the distance
      * @return Returns the distance

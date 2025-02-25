@@ -84,7 +84,11 @@ uint8_t DFRobot_matrixLidarDistanceSensor::getAllDataConfig(eMatrix_t matrix){
   sendpkt->argsNumH = ((length + 1) >> 8) & 0xFF;
   sendpkt->argsNumL = (length + 1) & 0xFF;
   sendpkt->cmd = CMD_SETMODE;
-  sendpkt->args[0] = 0;
+  if(matrix == eObstacle){
+    sendpkt->args[0] = 1;
+  }else{
+    sendpkt->args[0] = 0;
+  }
   sendpkt->args[1] = 0;
   sendpkt->args[2] = 0;
   sendpkt->args[3] = matrix;
@@ -211,6 +215,9 @@ uint8_t DFRobot_matrixLidarDistanceSensor::requestObstacleSensorData(void){
     DBG(length);
     outDir = rcvpkt->buf[0];
     outEmergencyFlag = rcvpkt->buf[1];
+    outLeft = (rcvpkt->buf[2] | rcvpkt->buf[3] << 8);
+    outMiddle = (rcvpkt->buf[4] | rcvpkt->buf[5] << 8);
+    outRight = (rcvpkt->buf[6] | rcvpkt->buf[7] << 8);
     //memcpy(buf,rcvpkt->buf,length);
     if(rcvpkt) free(rcvpkt);
     return 0;
@@ -226,35 +233,6 @@ uint8_t DFRobot_matrixLidarDistanceSensor::getEmergencyFlag(void){
   return outEmergencyFlag;
 }
 
-uint8_t DFRobot_matrixLidarDistanceSensor::requestObstacleDistance(void){
-  uint8_t length = 0;
-  uint8_t errorCode;
-  pCmdSendPkt_t sendpkt = NULL;
-  sendpkt = (pCmdSendPkt_t)malloc(sizeof(sCmdSendPkt_t) + length);
-  if(sendpkt == NULL) return 1;
-  sendpkt->head = 0x55;
-  sendpkt->argsNumH = ((length + 1) >> 8) & 0xFF;
-  sendpkt->argsNumL = (length + 1) & 0xFF;
-  sendpkt->cmd = CMD_OBSTACLE_DISTANCE;
-  
-  length += sizeof(sCmdSendPkt_t);
-  DBG(length);
-  sendPacket(sendpkt, length , true);
-  free(sendpkt);
-  pCmdRecvPkt_t rcvpkt = (pCmdRecvPkt_t)recvPacket(CMD_OBSTACLE_DISTANCE, &errorCode);
-  if((rcvpkt != NULL) && (rcvpkt->status == STATUS_FAILED)) errorCode = rcvpkt->buf[0];
-  if((rcvpkt != NULL) && (rcvpkt->status == STATUS_SUCCESS)){
-    length = (rcvpkt->lenH << 8) | rcvpkt->lenL;
-    DBG(length);
-    outLeft = (rcvpkt->buf[0] | rcvpkt->buf[1] << 8);
-    outMiddle = (rcvpkt->buf[2] | rcvpkt->buf[3] << 8);
-    outRight = (rcvpkt->buf[4] | rcvpkt->buf[5] << 8);
-    if(rcvpkt) free(rcvpkt);
-    return 0;
-  }
-  return 1;
-
-}
 
 uint16_t DFRobot_matrixLidarDistanceSensor::getDistance(eDir_t dir){
   uint16_t _ret = 0;
@@ -274,13 +252,6 @@ uint16_t DFRobot_matrixLidarDistanceSensor::getDistance(eDir_t dir){
   return _ret;
 }
 
-uint16_t DFRobot_matrixLidarDistanceSensor::retDistance(eDir_t dir)
-{
-  requestObstacleDistance();
-  delay(10);
-  return getDistance(dir);
-
-}
 
 void DFRobot_matrixLidarDistanceSensor_I2C::sendPacket(void *pkt, int length, bool stop){
   uint8_t *pBuf = (uint8_t *)pkt;

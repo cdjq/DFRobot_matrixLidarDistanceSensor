@@ -90,13 +90,6 @@
     uint8_t getEmergencyFlag(void);
 
     /**
-     * @fn getObstacleDistance
-     * @brief 请求障碍物距离
-     * @return 返回请求状态
-     */
-    uint8_t requestObstacleDistance(void); 
-
-    /**
      * @fn getDistance
      * @brief 获取距离
      * @return 返回距离

@@ -39,13 +39,13 @@ void setup(void){
   Serial.println("begin success");
 
   //When using obstacle avoidance, the matrix can only be set to 4*4
-  while(tof.getAllDataConfig(eMatrix_4x4) != 0){
+  while(tof.getAllDataConfig(eObstacle) != 0){
     Serial.println("init error !!!!!");
     delay(1000);
   }
 
  // Set the obstacle avoidance distance to 15 centimeters
-  while(tof.configAvoidance(15) != 0){
+  while(tof.configAvoidance(200) != 0){
     Serial.println("init avoid error !!!!!");
     delay(1000);
   }

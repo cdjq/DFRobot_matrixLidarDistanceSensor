@@ -33,8 +33,8 @@ typedef enum{
  * @brief matrix selection
  */
 typedef enum{
-    eMatrix_4x4 = 4,
-    eMatrix_8X8 = 8,
+    eObstacle = 4,
+    eMatrix = 8,
 }eMatrix_t;
 
 class DFRobot_matrixLidarDistanceSensor{
@@ -109,20 +109,11 @@ public:
   uint8_t getEmergencyFlag(void);
 
   /**
-   * @fn getObstacleDistance
-   * @brief Requests the distance to obstacles
-   * @return Returns the request status
-   */
-  uint8_t requestObstacleDistance(void); 
-
-  /**
    * @fn getDistance
    * @brief Retrieves the distance
    * @return Returns the distance
    */
   uint16_t getDistance(eDir_t dir);
-
-  uint16_t retDistance(eDir_t dir);
 protected:
   /**
    * @fn recvPacket

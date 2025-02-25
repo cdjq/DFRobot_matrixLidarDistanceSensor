@@ -190,6 +190,9 @@ class DFRobot_matrixLidarDistanceSensor:
 			if length:
 				self._dir = recv_pkt[self.INDEX_RES_DATA]
 				self._emergency_flaf = recv_pkt[self.INDEX_RES_DATA + 1]
+				self._left =  (recv_pkt[self.INDEX_RES_DATA + 2] | recv_pkt[self.INDEX_RES_DATA + 3] << 8)
+				self._middle = (recv_pkt[self.INDEX_RES_DATA + 4] | recv_pkt[self.INDEX_RES_DATA + 5] << 8)
+				self._right = (recv_pkt[self.INDEX_RES_DATA + 6] | recv_pkt[self.INDEX_RES_DATA + 7] << 8)
 			return 0
 		return 1
     
@@ -209,28 +212,6 @@ class DFRobot_matrixLidarDistanceSensor:
     	'''
 		return self._emergency_flaf
     
-	def request_obstacle_distance(self):
-		'''!
-			@fn request_obstacle_distance
-      		@brief Requests the distance to obstacles
-      		@return Returns the request status
-    	'''
-		length = 0
-		pkt = [0] * (3 + length)
-		pkt[self.INDEX_ARGS_NUM_H] = ((length + 1) >> 8) & 0xFF
-		pkt[self.INDEX_ARGS_NUM_L] = (length+1) & 0xFF
-		pkt[self.INDEX_CMD]        = self.CMD_OBSTACLE_DISTANCE
-		self._send_packet(pkt)
-		time.sleep(0.1)
-		recv_pkt = self._recv_packet(self.CMD_OBSTACLE_DISTANCE)
-		if (len(recv_pkt) >= 5) and (recv_pkt[self.INDEX_RES_ERR] == self.ERR_CODE_NONE and recv_pkt[self.INDEX_RES_STATUS] == self.STATUS_SUCCESS):
-			length = recv_pkt[self.INDEX_RES_LEN_L] | (recv_pkt[self.INDEX_RES_LEN_H] << 8)
-			if length:
-				self._left =  (recv_pkt[self.INDEX_RES_DATA ] | recv_pkt[self.INDEX_RES_DATA + 1] << 8) / 10
-				self._middle = (recv_pkt[self.INDEX_RES_DATA + 2] | recv_pkt[self.INDEX_RES_DATA + 3] << 8) / 10
-				self._right = (recv_pkt[self.INDEX_RES_DATA + 4] | recv_pkt[self.INDEX_RES_DATA + 5] << 8) / 10
-			return 0
-		return 1
     
 	def get_diatance(self,dir):
 		'''!
