@@ -62,7 +62,7 @@ public:
    * @retval 0 Success
    * @retval 1 Failure
    */
-  uint8_t getAllDataConfig(eMatrix_t matrix);
+  uint8_t getAllDataConfig(uint8_t addr, eMatrix_t matrix);
 
   /**
    * @fn configAvoidance
@@ -81,11 +81,12 @@ public:
   /**
    * @fn getFixedPointData
    * @brief Retrieves data for a specific point
+   * @param addr Address of the sensor
    * @param x X coordinate
    * @param y Y coordinate
    * @return Returns the retrieved data
    */
-  uint16_t getFixedPointData(uint8_t x, uint8_t y);
+  uint16_t getFixedPointData(uint8_t addr,uint8_t x, uint8_t y);
 
   /**
    * @fn requestObstacleSensorData
@@ -114,6 +115,7 @@ public:
    * @return Returns the distance
    */
   uint16_t getDistance(eDir_t dir);
+  uint8_t _addr;
 protected:
   /**
    * @fn recvPacket
@@ -125,7 +127,7 @@ protected:
    * @n      NULL    indicates receiving packet failed
    * @n      Non-NULL  response packet pointer
    */
-  void* recvPacket(uint8_t cmd, uint8_t *errorCode);
+  void* recvPacket(uint8_t addrData, uint8_t cmd, uint8_t *errorCode);
   /**
    * @fn init
    * @brief Pure virtual function, interface init
@@ -141,22 +143,24 @@ protected:
    * @fn sendPacket
    * @brief I2C interface init
    * 
+   * @param addr    Address of the sensor
    * @param pkt    Set I2C communication frequency
    * @param length Set I2C communication frequency
    * @param stop   
    * @n     true   Stop
    * @n     false  Not stop
    */
-  virtual void sendPacket(void *pkt, int length, bool stop) = 0;
+  virtual void sendPacket(uint8_t addr, void *pkt, int length, bool stop) = 0;
   /**
    * @fn recvData
    * @brief I2C interface init
    * 
+   * @param addr    Address of the sensor
    * @param data    Store the received data cache
    * @param len     Byte number to be read
    * @return Actually read byte number    
    */
-  virtual int recvData(void *data, int len) = 0;
+  virtual int recvData(uint8_t addr, void *data, int len) = 0;
     
 private:
     uint32_t _timeout; ///< Time of receive timeout
@@ -170,24 +174,23 @@ public:
   ~DFRobot_matrixLidarDistanceSensor_I2C();
 private:
   TwoWire *_pWire;
-  uint8_t _addr;
   int init(void);
-  void sendPacket(void *pkt, int length, bool stop);
-  int recvData(void *data, int len);
+  void sendPacket(uint8_t addr, void *pkt, int length, bool stop);
+  int recvData(uint8_t addr, void *data, int len);
 
 };
 
-class DFRobot_matrixLidarDistanceSensor_UART:public DFRobot_matrixLidarDistanceSensor{
-public:
-  DFRobot_matrixLidarDistanceSensor_UART(Stream *s);
-  ~DFRobot_matrixLidarDistanceSensor_UART();
-private:
-  uint8_t _state = 0;
-  Stream *_s;
-  int init(void);
-  void sendPacket(void *pkt, int length, bool stop = true);
-  int recvData(void *data, int len);
+// class DFRobot_matrixLidarDistanceSensor_UART:public DFRobot_matrixLidarDistanceSensor{
+// public:
+//   DFRobot_matrixLidarDistanceSensor_UART(Stream *s);
+//   ~DFRobot_matrixLidarDistanceSensor_UART();
+// private:
+//   uint8_t _state = 0;
+//   Stream *_s;
+//   int init(void);
+//   void sendPacket(uint8_t addr, void *pkt, int length, bool stop = true);
+//   int recvData(uint8_t addr, void *data, int len);
   
-};
+// };
 
 #endif

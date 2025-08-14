@@ -20,7 +20,7 @@ void setup(void){
   }
   Serial.println("begin success");
   //config matrix mode
-  while(tof.getAllDataConfig(eMatrix) != 0){
+  while(tof.getAllDataConfig(0x30, eMatrix) != 0){
     Serial.println("init error !!!!!");
     delay(1000);
   }
@@ -29,7 +29,7 @@ void setup(void){
 
 void loop(void){
 
-    uint16_t data = tof.getFixedPointData(1,0);
+    uint16_t data = tof.getFixedPointData(0x30,1,0);
     Serial.print(data);
     Serial.println(" mm");
     delay(10);
